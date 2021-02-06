@@ -39,6 +39,8 @@ class TitleState extends MusicBeatState
 	var ngSpr:FlxSprite;
 
 	var curWacky:Array<String> = [];
+	var wackyAss:String;
+	var wackyLogoName:String = '';
 
 	var wackyImage:FlxSprite;
 
@@ -53,12 +55,12 @@ class TitleState extends MusicBeatState
 		PlayerSettings.init();
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
+		wackyAss = FlxG.random.getObject(getAssocations());
+		wackyLogoName = wackyLogoName + FlxG.random.getObject(getLogo());
 
 		// DEBUG BULLSHIT
 
 		super.create();
-
-		NGio.noLogin(APIStuff.API);
 
 		#if ng
 		var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
@@ -184,10 +186,12 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic('assets/images/newgrounds_logo.png');
+		var bruh:String = StringTools.trim('assets/images/' + wackyLogoName);
+		trace(bruh);
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(bruh);
 		add(ngSpr);
 		ngSpr.visible = false;
-		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
+		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.9));
 		ngSpr.updateHitbox();
 		ngSpr.screenCenter(X);
 		ngSpr.antialiasing = true;
@@ -217,6 +221,24 @@ class TitleState extends MusicBeatState
 		}
 
 		return swagGoodArray;
+	}
+
+	function getAssocations():Array<String>
+		{
+			var fullText:String = Assets.getText('assets/data/associates.txt');
+	
+			var firstArray:Array<String> = fullText.split('\n');
+	
+			return firstArray;
+		}
+
+	function getLogo():Array<String>
+	{
+		var fullText:String = Assets.getText('assets/data/imagenames.txt');
+
+		var firstArray:Array<String> = fullText.split('\n');
+	
+		return firstArray;
 	}
 
 	var transitioning:Bool = false;
@@ -273,7 +295,7 @@ class TitleState extends MusicBeatState
 				if (version.trim() != NGio.GAME_VER.trim() && !OutdatedSubState.leftState)
 				{
 					trace('OLD VERSION!');
-					FlxG.switchState(new OutdatedSubState());
+					FlxG.switchState(new MainMenuState());
 				}
 				else
 				{
@@ -352,8 +374,8 @@ class TitleState extends MusicBeatState
 			case 5:
 				createCoolText(['In association', 'with']);
 			case 7:
-				addMoreText('newgrounds');
 				ngSpr.visible = true;
+				addMoreText(wackyAss);
 			// credTextShit.text += '\nNewgrounds';
 			case 8:
 				deleteCoolText();
