@@ -100,6 +100,7 @@ class PlayState extends MusicBeatState
 
 	var limo:FlxSprite;
 	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
+	var grpObamaDancers:FlxTypedGroup<ObamaDancer>;
 	var fastCar:FlxSprite;
 
 	var upperBoppers:FlxSprite;
@@ -244,13 +245,31 @@ class PlayState extends MusicBeatState
 			add(bgLimo);
 
 			grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
+			grpObamaDancers = new FlxTypedGroup<ObamaDancer>();
 			add(grpLimoDancers);
+			add(grpObamaDancers);
 
+			var sizeOffset;
+			var initOffset = 1; //How much the lads should be sized
+			var crazyY;
+			var position = 1980;
 			for (i in 0...5)
 			{
-				var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 400);
+				sizeOffset = 1 + initOffset * (Math.random() - 0.5);
+				crazyY = 173 * Math.log(9.5 * sizeOffset);
+				var dancer:BackgroundDancer = new BackgroundDancer(position, bgLimo.y - crazyY);
+				dancer.scale.set(sizeOffset, sizeOffset);
 				dancer.scrollFactor.set(0.4, 0.4);
 				grpLimoDancers.add(dancer);
+				position -= 185;
+
+				sizeOffset = 1 + initOffset * (Math.random() - 0.5);
+				crazyY = 173 * Math.log(9.5 * sizeOffset);
+				var obamaD:ObamaDancer = new ObamaDancer(position, bgLimo.y - crazyY);
+				obamaD.scale.set(sizeOffset, sizeOffset);
+				obamaD.scrollFactor.set(0.4, 0.4);
+				grpObamaDancers.add(obamaD);
+				position -= 185;
 			}
 
 			var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic('assets/images/limo/limoOverlay.png');
@@ -557,6 +576,8 @@ class PlayState extends MusicBeatState
 			case 'monster-christmas':
 				dad.y += 130;
 			case 'dad':
+				dad.scale.set(0.6,0.5); //Jerma-sized
+				dad.y += 200;
 				camPos.x += 400;
 			case 'pico':
 				camPos.x += 600;
@@ -2333,6 +2354,11 @@ class PlayState extends MusicBeatState
 
 			case 'limo':
 				grpLimoDancers.forEach(function(dancer:BackgroundDancer)
+				{
+					dancer.dance();
+				});
+
+				grpObamaDancers.forEach(function(dancer:ObamaDancer)
 				{
 					dancer.dance();
 				});
